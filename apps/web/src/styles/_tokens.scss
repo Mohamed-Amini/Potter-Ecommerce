@@ -1,0 +1,42 @@
+// Design tokens as SCSS maps — the single source of truth that both the
+// utility/mixin layer and the generated CSS custom properties (styles.scss)
+// read from. See ts-training/examples/scss-hacks.scss section 2.
+//
+// Placeholder palette (clay/terracotta, on-theme for a pottery marketplace)
+// — swap these for the real Pottery Market design tokens once available.
+
+@use 'sass:map';
+
+$spacing: (
+  'xs': 4px,
+  'sm': 8px,
+  'md': 16px,
+  'lg': 24px,
+  'xl': 40px,
+  '2xl': 64px,
+);
+
+$breakpoints: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+);
+
+$color-brand: #b5602b; // clay/terracotta
+$color-brand-dark: #8a4620;
+$color-surface-light: #fffaf5;
+$color-surface-dark: #201a16;
+$color-text-light: #26201c;
+$color-text-dark: #f2e9e2;
+$color-danger: #c0392b;
+
+$font-family-base: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+$font-family-display: 'Fraunces', Georgia, serif;
+
+@function spacing($key) {
+  @if not map.has-key($spacing, $key) {
+    @error "Unknown spacing key: #{$key}. Valid keys: #{map.keys($spacing)}.";
+  }
+  @return map.get($spacing, $key);
+}

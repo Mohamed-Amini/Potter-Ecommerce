@@ -1,0 +1,57 @@
+// Mixin/function library that consumes _tokens.scss. @use this (not
+// _tokens.scss directly) from component styles. See scss-hacks.scss
+// sections 3, 4, 9, 11.
+
+@use 'sass:map';
+@use 'tokens';
+
+@mixin respond-above($breakpoint) {
+  $value: map.get(tokens.$breakpoints, $breakpoint);
+  @if $value == null {
+    @error "Unknown breakpoint: #{$breakpoint}.";
+  }
+  @media (min-width: $value) {
+    @content;
+  }
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin truncate-lines($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@mixin respect-motion-preference {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}

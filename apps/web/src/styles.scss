@@ -1,0 +1,80 @@
+// Global styles. Design tokens live in src/styles/_tokens.scss, the
+// mixin/function library in src/styles/_mixins.scss — @use those from every
+// component's own .scss file rather than repeating values or media queries.
+// See ts-training/examples/scss-hacks.scss for the full pattern reference.
+
+@use 'sass:map';
+@use 'styles/tokens';
+
+// Explicit cascade priority, independent of selector specificity —
+// scss-hacks.scss section 6. Add `taiga`/a 3rd-party layer here first if one
+// is ever introduced, so it always loses to `components`/`utilities`.
+@layer reset, base, components, utilities;
+
+:root {
+  @each $key, $value in tokens.$spacing {
+    --space-#{$key}: #{$value};
+  }
+
+  --color-brand: #{tokens.$color-brand};
+  --color-brand-hover: #{tokens.$color-brand-dark};
+  --color-surface: #{tokens.$color-surface-light};
+  --color-text: #{tokens.$color-text-light};
+  --color-danger: #{tokens.$color-danger};
+  --color-focus-ring: var(--color-brand);
+
+  --font-family-base: #{tokens.$font-family-base};
+  --font-family-display: #{tokens.$font-family-display};
+}
+
+:root[data-theme='dark'] {
+  --color-surface: #{tokens.$color-surface-dark};
+  --color-text: #{tokens.$color-text-dark};
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-surface: #{tokens.$color-surface-dark};
+    --color-text: #{tokens.$color-text-dark};
+  }
+}
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+  }
+}
+
+@layer base {
+  body {
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-family-base);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-family-display);
+    margin-block-start: 0;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
