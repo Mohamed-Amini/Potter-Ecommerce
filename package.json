@@ -1,0 +1,29 @@
+{
+  "name": "pottery",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,yellow \"npm run start --workspace=web\" \"npm run dev --workspace=api\"",
+    "dev:web": "npm run start --workspace=web",
+    "dev:api": "npm run dev --workspace=api",
+    "start": "npm run start --workspace=web",
+    "build": "npm run build --workspace=web && npm run build --workspace=api",
+    "test": "npm run test --workspace=web && npm run test --workspace=api",
+    "test:web": "npm run test --workspace=web",
+    "test:api": "npm run test --workspace=api",
+    "lint": "npm run lint --workspace=web && npm run lint --workspace=api",
+    "typecheck": "npm run typecheck --workspace=@pottery/shared && npm run typecheck --workspace=api",
+    "format": "prettier --write \"apps/web/src/**/*.{ts,html,scss}\" \"apps/api/src/**/*.ts\" \"packages/shared/src/**/*.ts\"",
+    "format:check": "prettier --check \"apps/web/src/**/*.{ts,html,scss}\" \"apps/api/src/**/*.ts\" \"packages/shared/src/**/*.ts\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

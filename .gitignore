@@ -1,0 +1,23 @@
+# Node / npm workspaces
+node_modules/
+npm-debug.log
+package-lock.json.bak
+
+# Build output
+dist/
+out-tsc/
+/apps/web/.angular/cache
+
+# Editors / OS
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
