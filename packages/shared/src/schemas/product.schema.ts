@@ -15,7 +15,7 @@ export const productSchema = z.object({
   material: z.string().min(1),
   sizeLabel: z.string().min(1),
   pricePence: z.number().int().nonnegative(),
-  currency: z.literal('GBP'),
+  currency: z.literal('RUB'),
   stockCount: z.number().int().nonnegative(),
   images: z.array(z.url()).min(1),
 });

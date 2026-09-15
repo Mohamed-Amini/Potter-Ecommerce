@@ -8,6 +8,27 @@
       "when": 1789410222379,
       "tag": "0000_glamorous_jackal",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789490347576,
+      "tag": "0001_yummy_black_crow",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789491075126,
+      "tag": "0002_loud_agent_brand",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789491426727,
+      "tag": "0003_sharp_nitro",
+      "breakpoints": true
     }
   ]
 }
