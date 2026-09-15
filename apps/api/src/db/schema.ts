@@ -38,7 +38,7 @@ export const users = pgTable('users', {
 
 export const phoneVerifications = pgTable('phone_verifications', {
   id: id(),
-  phoneNumber: varchar('phone_number', { length: 11 }).notNull(),
+  phoneNumber: varchar('phone_number', { length: 16 }).notNull(),
   codeHash: text('code_hash').notNull(),
   attempts: integer('attempts').notNull().default(0),
   expiresAt: timestamp('expires_at').notNull(),
