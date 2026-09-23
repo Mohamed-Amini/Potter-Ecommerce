@@ -15,4 +15,4 @@ export const app = new Elysia()
 
 const hostname = app.server?.hostname ?? 'localhost';
 const port = app.server?.port ?? env.PORT;
-console.log(`🦊 Pottery API running at http://${hostname}:${String(port)} (docs at /docs)`);
+console.log(`Pottery API running at http://${hostname}:${String(port)} (docs at /docs)`);

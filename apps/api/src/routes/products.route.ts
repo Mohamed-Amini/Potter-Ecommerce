@@ -1,11 +1,24 @@
 import { eq } from 'drizzle-orm';
 import { Elysia } from 'elysia';
 import { z } from 'zod';
-import { createProductSchema, productIdSchema, productSchema } from '@pottery/shared';
+import {
+  createProductSchema,
+  editProductSchema,
+  productIdSchema,
+  productSchema,
+} from '@pottery/shared';
 import { db } from '../db/client';
 import { products } from '../db/schema';
+import {
+  
+  conflictingField,
+  isUniqueViolation,
+  
+} from '../utils/Errors.util';
 
-const notFoundSchema = z.object({ message: z.string() });
+import {
+  apiErrorSchema 
+} from '@pottery/shared/schemas/error.schema'
 
 export const productsRoutes = new Elysia({ prefix: '/products' })
   .get(
@@ -22,14 +35,14 @@ export const productsRoutes = new Elysia({ prefix: '/products' })
     '/:id',
     async ({ params, status }) => {
       const [row] = await db.select().from(products).where(eq(products.id, params.id));
-      if (!row) return status(404, { message: `Product ${params.id} not found` });
+      if (!row) return status(404, {code: 'NOT_FOUND' , message: `Product ${params.id} not found` });
       return productSchema.parse(row);
     },
     {
       params: z.object({ id: z.uuid() }),
       response: {
         200: productSchema,
-        404: notFoundSchema,
+        404: apiErrorSchema,
       },
     },
   )
@@ -46,6 +59,41 @@ export const productsRoutes = new Elysia({ prefix: '/products' })
       body: createProductSchema,
       response: {
         201: productSchema,
+      },
+    },
+  )
+  .patch(
+    '/:id',
+    async ({ params, body, status }) => {
+      if (Object.keys(body).length === 0) {
+        return status(400, { code: 'BAD_REQUEST' , message: 'Send at least one field to change.' });
+      }
+
+      try {
+        const [row] = await db
+          .update(products)
+          .set(body)
+          .where(eq(products.id, params.id))
+          .returning();
+
+        if (!row) return status(404, {code:'NOT_FOUND' , message: `Product ${params.id} not found` });
+        return status(200, productSchema.parse(row));
+      } catch (error) {
+        if (isUniqueViolation(error)) {
+          const field = conflictingField(error);
+          return status(409, {code: 'CONFLICT' , message: `Another product already uses that ${field}.`});
+        }
+        throw error;
+      }
+    },
+    {
+      body: editProductSchema,
+      params: z.object({ id: z.uuid() }),
+      response: {
+        200: productSchema,
+        400: apiErrorSchema,
+        404: apiErrorSchema,
+        409: apiErrorSchema,
       },
     },
   );
