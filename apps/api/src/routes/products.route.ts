@@ -12,6 +12,7 @@ import { products } from '../db/schema';
 import {
   
   conflictingField,
+  isForeignKeyViolation,
   isUniqueViolation,
   
 } from '../utils/Errors.util';
@@ -19,6 +20,7 @@ import {
 import {
   apiErrorSchema 
 } from '@pottery/shared/schemas/error.schema'
+
 
 export const productsRoutes = new Elysia({ prefix: '/products' })
   .get(
@@ -96,4 +98,31 @@ export const productsRoutes = new Elysia({ prefix: '/products' })
         409: apiErrorSchema,
       },
     },
+  ).delete(
+    '/:id',
+    async({params , status}) => {
+      try {
+        const [row] = await db.delete(products).where(eq(products.id,params.id)).returning();
+        if (!row) return status(404 , {code: 'NOT_FOUND' , message: `Product ${params.id} was not found`})
+        return status(204, undefined);
+      }catch (error) {
+          if(isForeignKeyViolation(error)){
+            return status(409 , {code: 'CONFLICT' , message: 'This product has orders and cannot be deleted'})
+          }
+        throw error;
+      }
+    },
+    {
+      params: z.object({id: z.uuid()}),
+      response:{
+204: z.undefined(),
+404: apiErrorSchema,
+409: apiErrorSchema,
+      }
+      
+
+    }
+
   );
+
+

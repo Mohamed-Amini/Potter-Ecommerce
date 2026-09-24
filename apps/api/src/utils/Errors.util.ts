@@ -18,3 +18,13 @@ export function conflictingField(error: { cause: { constraint_name?: string } })
   const constraint = error.cause.constraint_name;
   return (constraint !== undefined ? FIELD_BY_CONSTRAINT[constraint] : undefined) ?? 'unknown';
 }
+
+
+export function isForeignKeyViolation(
+  error: unknown,
+): error is { cause: { code: string; constraint_name?: string } } {
+  if (typeof error !== 'object' || error === null || !('cause' in error)) return false;
+  const cause: unknown = error.cause;
+  if (typeof cause !== 'object' || cause === null || !('code' in cause)) return false;
+  return cause.code === '23503'; 
+}

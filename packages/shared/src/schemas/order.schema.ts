@@ -15,7 +15,7 @@ export const telegramHandleSchema = z
       .string()
       .regex(
         /^[a-z][a-z0-9_]{3,30}[a-z0-9]$/,
-        'A Telegram username is 5-32 characters, starts with a letter, and uses only letters, numbers and underscores',
+        'A Telegram username is 5-32 characters, starts with a letter, and uses only letters, numbers and underscores', // TODO: well translating this to russian) 
       ),
   );
 
