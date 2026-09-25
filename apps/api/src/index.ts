@@ -4,8 +4,10 @@ import { swagger } from '@elysiajs/swagger';
 import { env } from './config/env';
 import { categoriesRoutes } from './routes/categories.route';
 import { productsRoutes } from './routes/products.route';
+import { errorHandler } from './plugins/error-handler';
 
 export const app = new Elysia()
+  .use(errorHandler)
   .use(cors({ origin: env.CORS_ORIGIN }))
   .use(swagger({ path: '/docs' }))
   .get('/health', () => ({ status: 'ok' as const }))
