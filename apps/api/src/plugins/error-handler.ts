@@ -6,9 +6,6 @@ import type { ApiError } from '@pottery/shared';
 
 export const errorHandler = new Elysia({name: 'error-handler'})
 .onError({as: 'global'} , ({code, error , set}) => {
-    // Checked first: Elysia labels a thrown error by its own `code` property, so
-    // our NotFoundError also arrives as code 'NOT_FOUND' and would otherwise be
-    // mistaken for "no route matched" below.
     if(error instanceof AppError){
         set.status = error.status
         return {

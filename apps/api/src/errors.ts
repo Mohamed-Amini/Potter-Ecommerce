@@ -4,7 +4,10 @@ export abstract class AppError extends Error {
   abstract readonly code: ApiError['code'];
   abstract readonly status: 400 | 401 | 403 | 404 | 409 | 422 | 429;
   readonly field?: string;
+  readonly issues?: Issue[];
+  
 }
+export type Issue = NonNullable<ApiError['issues']>[number];
 
 export class ConflictError extends AppError {
   override readonly name = 'ConflictError';
@@ -34,10 +37,9 @@ export class OutOfStockError extends AppError {
   readonly status = 409 as const;
 
   constructor(
-    readonly productId: string,
-    readonly available: number,
+    override readonly issues: Issue[],
     options?: ErrorOptions,
   ) {
-    super(`Only ${String(available)} left in stock`, options);
+    super(`Some items are no longer available in that quantity.`, options);
   }
 }
