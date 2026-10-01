@@ -1,6 +1,8 @@
 import { Elysia } from 'elysia';
 import { apiErrorSchema, createOrderRequestSchema, orderRequestSchema } from '@pottery/shared';
-import { createOrderRequest } from '../services/order.service';
+import { createOrderRequest } from '../services/order/order.service';
+import { sendTelegramMessage } from '../services/telegram/telegram.service';
+import { formatOrderMessage } from '../services/telegram/order-message';
 
 
 export const orderRequestRoute = new Elysia({prefix:'/order-requests'})
@@ -37,6 +39,9 @@ export const orderRequestRoute = new Elysia({prefix:'/order-requests'})
     .post('/',
         async({body, status}) => {
             const { order , lines} = await createOrderRequest(body);
+            sendTelegramMessage(formatOrderMessage(order , lines)).catch((error: unknown) => {
+                console.error('Telegram notification failed', error)
+            })
             return status(201 , orderRequestSchema.parse({
                 id : order.id,
                 referenceNumber: order.referenceNumber,

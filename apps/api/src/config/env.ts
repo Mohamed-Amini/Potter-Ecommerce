@@ -5,6 +5,8 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   CORS_ORIGIN: z.string().default('http://localhost:4200'),
   DATABASE_URL: z.url(),
+  TELEGRAM_BOT_TOKEN: z.string().nonempty(),
+  TELEGRAM_CHAT_ID: z.string().regex(/^-?\d+$/, 'Must be a Telegram chat id, e.g. 123456789'),
 });
 
 function loadEnv(raw: NodeJS.ProcessEnv): z.infer<typeof envSchema> {
