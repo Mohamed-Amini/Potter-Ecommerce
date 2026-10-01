@@ -11,7 +11,8 @@ export const errorHandler = new Elysia({name: 'error-handler'})
         return {
             code: error.code,
             message: error.message,
-            ...(error.field !== undefined ? {field: error.field} : {})
+            ...(error.field !== undefined ? {field: error.field} : {}),
+            ...(error.issues !== undefined ? {issues: error.issues} : {}),
         } satisfies ApiError;
     }
     if(code === 'VALIDATION' && error.type !== 'response'){

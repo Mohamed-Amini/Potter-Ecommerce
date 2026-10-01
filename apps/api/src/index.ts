@@ -5,6 +5,7 @@ import { env } from './config/env';
 import { categoriesRoutes } from './routes/categories.route';
 import { productsRoutes } from './routes/products.route';
 import { errorHandler } from './plugins/error-handler';
+import { orderRequestRoute } from './routes/order-requests.route';
 
 export const app = new Elysia()
   .use(errorHandler)
@@ -13,6 +14,7 @@ export const app = new Elysia()
   .get('/health', () => ({ status: 'ok' as const }))
   .use(categoriesRoutes)
   .use(productsRoutes)
+  .use(orderRequestRoute)
   .listen(env.PORT);
 
 const hostname = app.server?.hostname ?? 'localhost';
