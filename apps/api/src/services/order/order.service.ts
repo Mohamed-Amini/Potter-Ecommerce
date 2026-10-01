@@ -1,8 +1,8 @@
 import type { CreateOrderRequestPayload , ProductId } from '@pottery/shared';
-import { db  } from '../db/client';
-import { orderRequestItems, orderRequests, products } from '../db/schema';
+import { db  } from '../../db/client';
+import { orderRequestItems, orderRequests, products } from '../../db/schema';
 import { and, eq, inArray, sql , gte } from 'drizzle-orm';
-import { OutOfStockError, type Issue , NotFoundError } from '../errors';
+import { OutOfStockError, type Issue , NotFoundError } from '../../errors';
 
 
 export async function createOrderRequest(payload: CreateOrderRequestPayload ){

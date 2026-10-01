@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from 'bun:test';
 import { eq } from 'drizzle-orm';
 import { productIdSchema, type CreateOrderRequestPayload } from '@pottery/shared';
-import { db } from '../db/client';
-import { categories, orderRequestItems, orderRequests, products } from '../db/schema';
-import { NotFoundError, OutOfStockError } from '../errors';
+import { db } from '../../db/client';
+import { categories, orderRequestItems, orderRequests, products } from '../../db/schema';
+import { NotFoundError, OutOfStockError } from '../../errors';
 import { createOrderRequest } from './order.service';
 
 // ── Test data helpers ─────────────────────────────────────────────────────────
