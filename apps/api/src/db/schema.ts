@@ -29,10 +29,12 @@ export const products = pgTable('products', {
 export const contactMethod = pgEnum('contact_method', ['telegram', 'phone', 'email']);
 
 export const orderStatus = pgEnum('order_status', [
-  'confirmed',
+  'awaiting_payment',
+  'paid',
   'shipped',
   'completed',
-  'cancelled',
+  'expired',
+  'cancelled'
 ]);
 
 export const orderRequests = pgTable('order_requests', {
@@ -44,9 +46,10 @@ export const orderRequests = pgTable('order_requests', {
   note: text('note'),
   itemsTotalMinor: integer('items_total_minor').notNull(),
   agreedTotalMinor: integer('agreed_total_minor'),
-  status: orderStatus('status').notNull().default('confirmed'),
-  contactedAt: timestamp('contacted_at'),
-  confirmedAt: timestamp('confirmed_at'),
+  status: orderStatus('status').notNull().default('awaiting_payment'),
+  paidAt: timestamp('paid_at'),
+  expiredAt: timestamp('expired_at'),
+  shippedAt: timestamp('shipped_at'),
   completedAt: timestamp('completed_at'),
   cancelledAt: timestamp('cancelled_at'),
   createdAt: createdAt(),

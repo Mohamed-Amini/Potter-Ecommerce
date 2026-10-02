@@ -50,6 +50,20 @@
       "when": 1789667974406,
       "tag": "0006_add_order_requests",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790940672687,
+      "tag": "0007_order_status_drop_old",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790940688542,
+      "tag": "0008_order_status_add_timestamps",
+      "breakpoints": true
     }
   ]
 }

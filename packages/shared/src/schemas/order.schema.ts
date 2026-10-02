@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { phoneNumberSchema } from './contact.schema';
 import { productIdSchema } from './product.schema';
-
 export const orderRequestIdSchema = z.uuid().brand<'OrderRequestId'>();
 export type OrderRequestId = z.infer<typeof orderRequestIdSchema>;
 
@@ -48,12 +47,12 @@ export const createOrderRequestSchema = z.object({
 export type CreateOrderRequestPayload = z.infer<typeof createOrderRequestSchema>;
 
 export const orderStatusSchema = z.enum([
-  'new',
-  'contacted',
-  'confirmed',
+  'awaiting_payment',
+  'paid',
   'shipped',
   'completed',
-  'cancelled',
+  'expired',
+  'cancelled'
 ]);
 export type OrderStatus = z.infer<typeof orderStatusSchema>;
 
@@ -79,3 +78,4 @@ export const orderRequestSchema = z.object({
   createdAt: z.iso.datetime(),
 });
 export type OrderRequest = z.infer<typeof orderRequestSchema>;
+
