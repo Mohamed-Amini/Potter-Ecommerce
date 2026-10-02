@@ -25,12 +25,7 @@ export const emailSchema = z
   .pipe(z.email('Enter a valid email address'));
 
 
-export const contactSchema = z.discriminatedUnion('method', [
-  z.object({ method: z.literal('telegram'), value: telegramHandleSchema }),
-  z.object({ method: z.literal('phone'), value: phoneNumberSchema }),
-  z.object({ method: z.literal('email'), value: emailSchema }),
-]);
-export type Contact = z.infer<typeof contactSchema>;
+
 
 export const orderLineInputSchema = z.object({
   productId: productIdSchema,
@@ -40,7 +35,9 @@ export type OrderLineInput = z.infer<typeof orderLineInputSchema>;
 
 export const createOrderRequestSchema = z.object({
   customerName: z.string().trim().min(1).max(100),
-  contact: contactSchema,
+  customerEmail: emailSchema,
+  customerPhone: phoneNumberSchema,
+  customerTelegram: telegramHandleSchema.optional(),  
   note: z.string().trim().max(1000).optional(),
   items: z.array(orderLineInputSchema).min(1).max(50),
 });
@@ -69,7 +66,9 @@ export const orderRequestSchema = z.object({
   id: orderRequestIdSchema,
   referenceNumber: z.number().int().positive(),
   customerName: z.string().min(1),
-  contact: contactSchema,
+  customerEmail: emailSchema,
+  customerPhone: phoneNumberSchema,
+  customerTelegram: telegramHandleSchema.nullable(),
   note: z.string().nullable(),
   itemsTotalMinor: z.number().int().nonnegative(),
   agreedTotalMinor: z.number().int().nonnegative().nullable(),

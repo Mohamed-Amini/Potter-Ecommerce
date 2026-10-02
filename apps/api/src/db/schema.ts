@@ -26,7 +26,6 @@ export const products = pgTable('products', {
   createdAt: createdAt(),
 });
 
-export const contactMethod = pgEnum('contact_method', ['telegram', 'phone', 'email']);
 
 export const orderStatus = pgEnum('order_status', [
   'awaiting_payment',
@@ -41,8 +40,9 @@ export const orderRequests = pgTable('order_requests', {
   id: id(),
   referenceNumber: integer('reference_number').generatedAlwaysAsIdentity(),
   customerName: varchar('customer_name', { length: 100 }).notNull(),
-  contactMethod: contactMethod('contact_method').notNull(),
-  contactValue: varchar('contact_value', { length: 254 }).notNull(),
+  customerEmail: varchar('customer_email', { length: 254 }).notNull(),
+  customerPhone: varchar('customer_phone', { length: 16 }).notNull(),
+  customerTelegram: varchar('customer_telegram', { length: 32 }),
   note: text('note'),
   itemsTotalMinor: integer('items_total_minor').notNull(),
   agreedTotalMinor: integer('agreed_total_minor'),

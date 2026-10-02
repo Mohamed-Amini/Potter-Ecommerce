@@ -43,8 +43,9 @@ export async function createOrderRequest(payload: CreateOrderRequestPayload ){
     return await db.transaction(async(tx)=> {
         const [order] = await tx.insert(orderRequests).values({
             customerName: payload.customerName,
-            contactMethod: payload.contact.method,
-            contactValue: payload.contact.value,
+            customerEmail: payload.customerEmail,
+            customerPhone: payload.customerPhone,
+            customerTelegram: payload.customerTelegram ?? null,
             note: payload.note ?? null,
             itemsTotalMinor: itemsTotalMinor,
         }).returning()

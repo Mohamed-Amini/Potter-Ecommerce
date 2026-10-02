@@ -32,7 +32,9 @@ async function addProduct(slug: string, priceMinor: number, stockCount: number) 
 function basket(...items: [productId: string, quantity: number][]): CreateOrderRequestPayload {
   return {
     customerName: 'Masha',
-    contact: { method: 'email', value: 'masha@example.com' },
+    customerEmail: 'masha@example.com',
+    customerPhone: '+79236546020',
+    customerTelegram: 'Hellokitty',
     items: items.map(([productId, quantity]) => ({
       productId: productIdSchema.parse(productId),
       quantity,
@@ -85,7 +87,7 @@ describe('createOrderRequest', () => {
     // 2 mugs × 1 600 ₽ + 1 vase × 6 200 ₽ = 9 400 ₽
     expect(order.itemsTotalMinor).toBe(940_000);
     expect(order.referenceNumber).toBeGreaterThan(0);
-    expect(order.contactValue).toBe('masha@example.com');
+    expect(order.customerEmail).toBe('masha@example.com');
 
     // The two mug lines became one line with quantity 2.
     expect(lines).toHaveLength(2);

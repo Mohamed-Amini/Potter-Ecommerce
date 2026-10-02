@@ -64,6 +64,20 @@
       "when": 1790940688542,
       "tag": "0008_order_status_add_timestamps",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790964889627,
+      "tag": "0009_contact_drop_method",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790964896752,
+      "tag": "0010_contact_add_fields",
+      "breakpoints": true
     }
   ]
 }
