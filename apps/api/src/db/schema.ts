@@ -38,6 +38,7 @@ export const orderStatus = pgEnum('order_status', [
 
 export const orderRequests = pgTable('order_requests', {
   id: id(),
+  orderCode: varchar('order_code', {length: 6}).notNull().unique(),
   referenceNumber: integer('reference_number').generatedAlwaysAsIdentity(),
   customerName: varchar('customer_name', { length: 100 }).notNull(),
   customerEmail: varchar('customer_email', { length: 254 }).notNull(),

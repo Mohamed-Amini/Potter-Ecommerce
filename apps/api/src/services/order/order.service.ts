@@ -3,6 +3,7 @@ import { db  } from '../../db/client';
 import { orderRequestItems, orderRequests, products } from '../../db/schema';
 import { and, eq, inArray, sql , gte } from 'drizzle-orm';
 import { OutOfStockError, type Issue , NotFoundError } from '../../errors';
+import { generateOrderCode } from './order-code';
 
 
 export async function createOrderRequest(payload: CreateOrderRequestPayload ){
@@ -43,8 +44,9 @@ export async function createOrderRequest(payload: CreateOrderRequestPayload ){
     return await db.transaction(async(tx)=> {
         const [order] = await tx.insert(orderRequests).values({
             customerName: payload.customerName,
-            customerEmail: payload.customerEmail,
             customerPhone: payload.customerPhone,
+            customerEmail: payload.customerEmail,
+            orderCode: generateOrderCode(),
             customerTelegram: payload.customerTelegram ?? null,
             note: payload.note ?? null,
             itemsTotalMinor: itemsTotalMinor,
@@ -63,8 +65,6 @@ export async function createOrderRequest(payload: CreateOrderRequestPayload ){
                 quantity
             });
 
-            // Takes the stock only if there is still enough of it. If another order
-            // got there first, no row matches, and throwing undoes the whole transaction.
             const updated = await tx.update(products)
             .set({stockCount : sql`${products.stockCount} - ${quantity}`})
             .where(and(eq(products.id , product.id) , gte(products.stockCount , quantity)))
@@ -82,7 +82,6 @@ export async function createOrderRequest(payload: CreateOrderRequestPayload ){
     })
 }
 
-/** Where a product first appears in the basket, e.g. "items.2.quantity". */
 function basketPath(payload: CreateOrderRequestPayload, productId: string): string {
     const index = payload.items.findIndex((item) => item.productId === productId);
     return `items.${String(index)}.quantity`;
