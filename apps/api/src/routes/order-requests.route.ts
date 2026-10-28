@@ -44,6 +44,7 @@ export const orderRequestRoute = new Elysia({prefix:'/order-requests'})
             })
             return status(201 , orderRequestSchema.parse({
                 id : order.id,
+                orderCode: order.orderCode,
                 referenceNumber: order.referenceNumber,
                 customerName: order.customerName,
                 customerPhone: order.customerPhone,

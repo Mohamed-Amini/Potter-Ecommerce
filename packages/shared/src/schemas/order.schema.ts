@@ -64,6 +64,7 @@ export type OrderLine = z.infer<typeof orderLineSchema>;
 
 export const orderRequestSchema = z.object({
   id: orderRequestIdSchema,
+  orderCode: z.string().max(6),
   referenceNumber: z.number().int().positive(),
   customerName: z.string().min(1),
   customerEmail: emailSchema,

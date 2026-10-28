@@ -151,6 +151,38 @@ describe('createOrderRequest', () => {
     expect(await countOrders()).toBe(1);
   });
 
+  describe('when an order code is already taken', () => {
+    // A fake generator hands out codes from a list, so a collision can be forced.
+    const codesInOrder = (...codes: string[]) => {
+      let next = 0;
+      return () => codes[next++] ?? 'ZZZZZZ';
+    };
+
+    it('tries again with a new code and saves the order', async () => {
+      const mug = await addProduct('mug', 160_000, 4);
+      await createOrderRequest(basket([mug.id, 1]), codesInOrder('ABCDEF'));
+
+      // The second order's first code is the one already taken; its second is free.
+      const { order } = await createOrderRequest(basket([mug.id, 1]), codesInOrder('ABCDEF', 'GHJKMN'));
+
+      expect(order.orderCode).toBe('GHJKMN');
+      expect(await countOrders()).toBe(2);
+      expect(await stockOf(mug.id)).toBe(2);
+    });
+
+    it('gives up after 3 attempts and leaves nothing behind', async () => {
+      const mug = await addProduct('mug', 160_000, 4);
+      await createOrderRequest(basket([mug.id, 1]), codesInOrder('ABCDEF'));
+
+      // Every attempt returns the taken code.
+      const error = await failureOf(createOrderRequest(basket([mug.id, 1]), () => 'ABCDEF'));
+
+      expect(error).toBeInstanceOf(Error);
+      expect(await countOrders()).toBe(1);
+      expect(await stockOf(mug.id)).toBe(3);
+    });
+  });
+
   describe('when the stock runs out after the check but before the order is saved', () => {
     // Simulates another customer buying the vase in the gap between the stock
     // check and the transaction, so the failure happens INSIDE the transaction,
