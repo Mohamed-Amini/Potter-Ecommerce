@@ -9,8 +9,7 @@ import { generateOrderCode } from './order-code';
 const MAX_CODE_ATTEMPTS = 3;
 const ORDER_CODE_CONSTRAINT = 'order_requests_order_code_unique';
 
-// `generateCode` is a parameter (with a default) so a test can hand in a fake
-// generator and force a collision. Normal callers never pass it.
+
 export async function createOrderRequest(
     payload: CreateOrderRequestPayload,
     generateCode: () => string = generateOrderCode,
@@ -48,9 +47,6 @@ export async function createOrderRequest(
     }
     if(issues.length > 0) throw new OutOfStockError(issues);
 
-    // The whole transaction is retried, not just the insert: once a statement fails
-    // inside a Postgres transaction, the transaction is dead and has to be rolled back.
-    // A fresh code is generated on every attempt (generateCode() is called inside).
     for (let attempt = 1; attempt <= MAX_CODE_ATTEMPTS; attempt++) {
         try {
             return await db.transaction(async(tx)=> {
@@ -92,15 +88,12 @@ export async function createOrderRequest(
                 return { order, lines };
             })
         } catch (error) {
-            // Retry only if THIS constraint collided and there are attempts left.
-            // Any other error (out of stock, a different unique rule…) goes up unchanged.
             const codeWasTaken = isUniqueViolation(error) && error.cause.constraint_name === ORDER_CODE_CONSTRAINT;
             if (codeWasTaken && attempt < MAX_CODE_ATTEMPTS) continue;
             throw error;
         }
     }
 
-    // Unreachable (the last attempt either returns or throws), but TypeScript can't see that.
     throw new Error('Could not create an order');
 }
 
